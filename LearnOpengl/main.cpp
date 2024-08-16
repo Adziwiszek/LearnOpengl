@@ -4,6 +4,7 @@
 #include <GLFW\glfw3.h>
 #include <iostream>
 #include "shader.h"
+#include "camera.h"
 #include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,6 +21,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -51,10 +53,13 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);*/
 
 	const float cameraSpeed = deltaTime * 10; // adjust accordingly
+	glm::vec3 cameraRight = glm::cross(cameraFront, cameraUp);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraPos += cameraSpeed * cameraFront;
+		cameraPos += glm::normalize(glm::cross(cameraUp, cameraRight)) * cameraSpeed; // FPS camera
+		//cameraPos += cameraSpeed * cameraFront; // flight camera
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * cameraFront;
+		cameraPos -= glm::normalize(glm::cross(cameraUp, cameraRight)) * cameraSpeed; // FPS camera
+		//cameraPos -= cameraSpeed * cameraFront; //flight camera
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
@@ -128,6 +133,8 @@ int main()
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 
+	glEnable(GL_DEPTH_TEST);
+
 	// testing shader class
 	Shader ourShader("shaders/shader.sv", "shaders/shader.sf");
 
@@ -169,8 +176,6 @@ int main()
 		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 	};
-
-
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
@@ -270,7 +275,6 @@ int main()
 	ourShader.setInt("texture1", 0);
 	ourShader.setInt("texture2", 1);
 
-	glEnable(GL_DEPTH_TEST);
 
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f, 0.0f, 0.0f),
