@@ -37,69 +37,16 @@ float fov = 45.0f;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
+// lightning 
+glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+//glm::vec3 result = lightColor * toyColor;
+
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-// Function for handling resizing window
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow* window)
-{
-	/*bool Q_PRESSED = false;
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);*/
-
-	const float cameraSpeed = deltaTime * 10; // adjust accordingly
-	glm::vec3 cameraRight = glm::cross(cameraFront, cameraUp);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraPos += glm::normalize(glm::cross(cameraUp, cameraRight)) * cameraSpeed; // FPS camera
-		//cameraPos += cameraSpeed * cameraFront; // flight camera
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraPos -= glm::normalize(glm::cross(cameraUp, cameraRight)) * cameraSpeed; // FPS camera
-		//cameraPos -= cameraSpeed * cameraFront; //flight camera
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		cameraPos += cameraSpeed * cameraUp;
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * cameraUp;
-}
-
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	// changes polygon mode (if shapes are filled or just lines)
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
-		glPolygonMode(GL_FRONT_AND_BACK, POLYGON_MODE_ON ? GL_FILL : GL_LINE);
-		POLYGON_MODE_ON = !POLYGON_MODE_ON;
-	}
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-		mixParam += MIX_PARAM_CHANGE;
-		if (mixParam >= 1.0f) mixParam = 1.0f;
-	}
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-		mixParam -= MIX_PARAM_CHANGE;
-		if (mixParam <= 0.0f) mixParam = 0.0f;
-	}
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		exit(0);
-	}
-
-	/*const float cameraSpeed = 0.05f;
-	if (key == GLFW_KEY_W && action == GLFW_PRESS)
-		cameraPos += cameraSpeed * cameraFront;
-	if (key == GLFW_KEY_S && action == GLFW_PRESS)
-		cameraPos -= cameraSpeed * cameraFront;
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp));
-	if (key == GLFW_KEY_D && action == GLFW_PRESS)
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp));*/
-}
 
 int main() 
 {
@@ -366,6 +313,38 @@ int main()
 	return 0;
 }
 
+// Function for handling resizing window
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow* window)
+{
+	/*bool Q_PRESSED = false;
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);*/
+
+	const float cameraSpeed = deltaTime * 10; // adjust accordingly
+	glm::vec3 cameraRight = glm::cross(cameraFront, cameraUp);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraUp, cameraRight)) * cameraSpeed; // FPS camera
+		//cameraPos += cameraSpeed * cameraFront; // flight camera
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraUp, cameraRight)) * cameraSpeed; // FPS camera
+		//cameraPos -= cameraSpeed * cameraFront; //flight camera
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		cameraPos += cameraSpeed * cameraUp;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * cameraUp;
+}
+
+
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
@@ -403,6 +382,36 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 	front.y = sin(glm::radians(pitch));
 	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	cameraFront = glm::normalize(front);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	// changes polygon mode (if shapes are filled or just lines)
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, POLYGON_MODE_ON ? GL_FILL : GL_LINE);
+		POLYGON_MODE_ON = !POLYGON_MODE_ON;
+	}
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+		mixParam += MIX_PARAM_CHANGE;
+		if (mixParam >= 1.0f) mixParam = 1.0f;
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+		mixParam -= MIX_PARAM_CHANGE;
+		if (mixParam <= 0.0f) mixParam = 0.0f;
+	}
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		exit(0);
+	}
+
+	/*const float cameraSpeed = 0.05f;
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		cameraPos += cameraSpeed * cameraFront;
+	if (key == GLFW_KEY_S && action == GLFW_PRESS)
+		cameraPos -= cameraSpeed * cameraFront;
+	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp));
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp));*/
 }
 
 
