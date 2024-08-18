@@ -36,6 +36,7 @@
   <ItemGroup>
     <None Include="shaders\shader.sf" />
     <None Include="shaders\shader.sv" />
+    <None Include="shaders\lightSource.sf" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="wall.png">
