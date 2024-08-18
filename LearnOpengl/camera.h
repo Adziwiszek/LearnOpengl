@@ -5,12 +5,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <iostream>
+
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT, 
+    UP,
+    DOWN
 };
 
 // Default camera values
@@ -68,6 +72,7 @@ public:
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
         float velocity = MovementSpeed * deltaTime;
+        std::cout << Position[0] << std::endl;
         if (direction == FORWARD)
             Position += Front * velocity;
         if (direction == BACKWARD)
