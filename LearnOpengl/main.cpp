@@ -177,10 +177,24 @@ int main()
 
     // load textures with utility function
     // ------------------------------------
-	std::string texturePath = "container2.png";
+	std::string diffuseMapPath = "container2.png";
     // std::cout << "texture path: " << texturePath << std::endl;
-    unsigned int diffuseMap = 
-        loadTexture(texturePath.c_str());
+    unsigned int diffuseMap = loadTexture(diffuseMapPath.c_str());
+
+    std::string specularMapPath = "container2_specular.png";
+    unsigned int specularMap = loadTexture(specularMapPath.c_str());
+
+	std::string emmisionMapPath = "matrix.png";
+	unsigned int emmisionMap = loadTexture(emmisionMapPath.c_str());
+
+
+	// shader configuration
+	// --------------------
+	lightingShader.use();
+	lightingShader.setInt("material.diffuse", 0);
+	lightingShader.setInt("material.specular", 1);
+	lightingShader.setInt("material.emission", 2);
+
 
 	// render loop
 	// -----------
@@ -228,6 +242,14 @@ int main()
         // bind diffuse map 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+		// bind specular map
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, specularMap);
+
+		// bind specular map
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, emmisionMap);
 
 		// render the cube
 		glBindVertexArray(cubeVAO);
